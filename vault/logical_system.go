@@ -26,6 +26,7 @@ import (
 	"github.com/hashicorp/vault/helper/consts"
 	"github.com/hashicorp/vault/helper/identity"
 	"github.com/hashicorp/vault/helper/jsonutil"
+	"github.com/hashicorp/vault/helper/metricsutil"
 	"github.com/hashicorp/vault/helper/namespace"
 	"github.com/hashicorp/vault/helper/parseutil"
 	"github.com/hashicorp/vault/helper/strutil"
@@ -145,6 +146,7 @@ func NewSystemBackend(core *Core, logger log.Logger) *SystemBackend {
 	b.Backend.Paths = append(b.Backend.Paths, b.capabilitiesPaths()...)
 	b.Backend.Paths = append(b.Backend.Paths, b.internalPaths()...)
 	b.Backend.Paths = append(b.Backend.Paths, b.remountPath())
+	b.Backend.Paths = append(b.Backend.Paths, b.metricsPath())
 
 	if core.rawEnabled {
 		b.Backend.Paths = append(b.Backend.Paths, &framework.Path{
@@ -2169,6 +2171,12 @@ func (b *SystemBackend) handleRawRead(ctx context.Context, req *logical.Request,
 		}
 	}
 
+	// Run additional checks if needed
+	if err := checkRaw(b, path); err != nil {
+		b.Core.logger.Warn(err.Error(), "path", path)
+		return logical.ErrorResponse("cannot read '%s'", path), logical.ErrInvalidRequest
+	}
+
 	entry, err := b.Core.barrier.Get(ctx, path)
 	if err != nil {
 		return handleErrorNoReadOnlyForward(err)
@@ -2253,6 +2261,12 @@ func (b *SystemBackend) handleRawList(ctx context.Context, req *logical.Request,
 			err := fmt.Sprintf("cannot list '%s'", path)
 			return logical.ErrorResponse(err), logical.ErrInvalidRequest
 		}
+	}
+
+	// Run additional checks if needed
+	if err := checkRaw(b, path); err != nil {
+		b.Core.logger.Warn(err.Error(), "path", path)
+		return logical.ErrorResponse("cannot list '%s'", path), logical.ErrInvalidRequest
 	}
 
 	keys, err := b.Core.barrier.List(ctx, path)
@@ -2510,6 +2524,14 @@ func (b *SystemBackend) responseWrappingUnwrap(ctx context.Context, te *logical.
 	}
 
 	return response, nil
+}
+
+func (b *SystemBackend) handleMetrics(ctx context.Context, req *logical.Request, data *framework.FieldData) (*logical.Response, error) {
+	format := data.Get("format").(string)
+	if format == "" {
+		format = metricsutil.FormatFromRequest(req)
+	}
+	return b.Core.metricsHelper.ResponseForFormat(format)
 }
 
 func (b *SystemBackend) handleWrappingLookup(ctx context.Context, req *logical.Request, data *framework.FieldData) (*logical.Response, error) {
@@ -2889,6 +2911,14 @@ func (b *SystemBackend) pathInternalUIMountsRead(ctx context.Context, req *logic
 
 	b.Core.mountsLock.RLock()
 	for _, entry := range b.Core.mounts.Entries {
+		filtered, err := b.Core.checkReplicatedFiltering(ctx, entry, "")
+		if err != nil {
+			return nil, err
+		}
+		if filtered {
+			continue
+		}
+
 		if ns.ID == entry.NamespaceID && hasAccess(ctx, entry) {
 			if isAuthed {
 				// If this is an authed request return all the mount info
@@ -2906,6 +2936,14 @@ func (b *SystemBackend) pathInternalUIMountsRead(ctx context.Context, req *logic
 
 	b.Core.authLock.RLock()
 	for _, entry := range b.Core.auth.Entries {
+		filtered, err := b.Core.checkReplicatedFiltering(ctx, entry, credentialRoutePrefix)
+		if err != nil {
+			return nil, err
+		}
+		if filtered {
+			continue
+		}
+
 		if ns.ID == entry.NamespaceID && hasAccess(ctx, entry) {
 			if isAuthed {
 				// If this is an authed request return all the mount info
@@ -2945,6 +2983,14 @@ func (b *SystemBackend) pathInternalUIMountRead(ctx context.Context, req *logica
 		return errResp, logical.ErrPermissionDenied
 	}
 
+	filtered, err := b.Core.checkReplicatedFiltering(ctx, me, "")
+	if err != nil {
+		return nil, err
+	}
+	if filtered {
+		return errResp, logical.ErrPermissionDenied
+	}
+
 	resp := &logical.Response{
 		Data: mountInfo(me),
 	}
@@ -2969,6 +3015,21 @@ func (b *SystemBackend) pathInternalUIMountRead(ctx context.Context, req *logica
 
 	if !hasMountAccess(ctx, acl, ns.Path+me.Path) {
 		return errResp, logical.ErrPermissionDenied
+	}
+
+	return resp, nil
+}
+
+func (b *SystemBackend) pathInternalCountersRequests(ctx context.Context, req *logical.Request, d *framework.FieldData) (*logical.Response, error) {
+	counters, err := b.Core.loadAllRequestCounters(ctx, time.Now())
+	if err != nil {
+		return nil, err
+	}
+
+	resp := &logical.Response{
+		Data: map[string]interface{}{
+			"counters": counters,
+		},
 	}
 
 	return resp, nil
@@ -3883,5 +3944,13 @@ This path responds to the following HTTP methods.
 	"internal-ui-resultant-acl": {
 		"Information about a token's resultant ACL. Internal API; its location, inputs, and outputs may change.",
 		"",
+	},
+	"metrics": {
+		"Export the metrics aggregated for telemetry purpose.",
+		"",
+	},
+	"internal-counters-requests": {
+		"Count of requests seen by this Vault cluster over time.",
+		"Count of requests seen by this Vault cluster over time. Not included in count: health checks, UI asset requests, requests forwarded from another cluster.",
 	},
 }
