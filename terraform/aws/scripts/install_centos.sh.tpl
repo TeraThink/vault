@@ -21,21 +21,36 @@ sudo mkdir /vault-data
 sudo mkdir -p /logs/vault/
 
 # Setup the configuration
-git int
-git config core.sparsecheckout true
-git remote add -f origin  https://github.com/TeraThink/vault.git
-
-echo ${config} > /etc/vault/config.json
-sudo cp /tmp/myapp.conf /etc/systemd/system/vault.service
-
-
-
-sudo nohup systemctl start vault.service  > /logs/vault/vaultstartup.log &
+/usr/bin/git init
+/usr/bin/git config core.sparsecheckout true
+/usr/bin/git remote add -f origin  https://github.com/TeraThink/vault.git
+echo "terraform/aws/inputfiles/*" > .git/info/sparse-checkout
 sleep 0.001
+/usr/bin/git pull origin master
+sleep 0.001
+
+
+sudo cp terraform/aws/inputfiles/demoEnv/config.json /etc/vault/config.json
+sudo cp terraform/aws/inputfiles/demoEnv/vault.service /etc/systemd/system/
+sudo chmod 700 terraform/aws/runtimescripts/ipadd.sh
+sudo terraform/aws/runtimescripts/ipadd.sh
+
+
+sleep 0.001
+sudo nohup systemctl start vault.service
+#1> /logs/vault/vaultstartup.out 2> /logs/vault/vaultstartup.err &
+#sudo nohup systemctl start vault.service  > /logs/vault/vaultstartup.log &
+sleep 100
+echo " We are here at 1"
 sudo systemctl enable vault.service
-sleep 0.001
-vault operator init > /etc/vault/init.file
+echo " We are here at 2"
+sleep 10
+export VAULT_ADDR=http://127.0.0.1:8200
+sleep 10
+/usr/bin/vault operator init > /etc/vault/init.file
 # three times
-cat /etc/vault/init.file | grep 'Unseal Key 1:' | cut -d: -f2 | xargs vault operator unseal
-cat /etc/vault/init.file | grep 'Unseal Key 2:' | cut -d: -f2 | xargs vault operator unseal
-cat /etc/vault/init.file | grep 'Unseal Key 3:' | cut -d: -f2 | xargs vault operator unseal
+sleep 10
+
+cat /etc/vault/init.file | grep 'Unseal Key 1:' | cut -d: -f2 | xargs /usr/bin/vault operator unseal
+cat /etc/vault/init.file | grep 'Unseal Key 2:' | cut -d: -f2 | xargs /usr/bin/vault operator unseal
+cat /etc/vault/init.file | grep 'Unseal Key 3:' | cut -d: -f2 | xargs /usr/bin/vault operator unseal

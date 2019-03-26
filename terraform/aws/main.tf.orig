@@ -7,28 +7,12 @@ provider "aws" {
 }
 
 resource "template_file" "install" {
-/*
-  provisioner "file" {
-    source      = "${path.module}/inputfiles/configservice"
-    destination = "/tmp/myapp.conf"
-    connection {
-      user = "centos"
-      type = "ssh"
-      private_key = "${file("~/ssh/authorized_keys/vault_test.pem")}"
-      timeout = "30s"
-      agent = false
-    }
-  }
-*/
-  template = "${file("${path.module}/scripts/install_centos.sh.tpl")}"
+    template = "${file("${path.module}/scripts/install.sh.tpl")}"
 
-  vars {
-      download_url  = "${var.download-url}"
-#      config        = "${var.config}"
-      extra-install = "${var.extra-install}"
-      vaultversion  = "${var.vaultversion}"
-      vaultzipfile  = "${var.vaultzipfile}"
-  #    vaultservice  = "${var.vaultservice}"
+    vars {
+        download_url  = "${var.download-url}"
+        config        = "${var.config}"
+        extra-install = "${var.extra-install}"
     }
 }
 
@@ -58,7 +42,6 @@ resource "aws_launch_configuration" "vault" {
     key_name = "${var.key-name}"
     security_groups = ["${aws_security_group.vault.id}"]
     user_data = "${template_file.install.rendered}"
-
 }
 
 // Security group for Vault allows SSH and HTTP access (via "tcp" in

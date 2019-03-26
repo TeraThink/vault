@@ -28,9 +28,9 @@ variable "vaultversion" {
 }
 
 
-variable "config" {
-    description = "Configuration (text) for Vault"
-}
+#variable "config" {
+#    description = "Configuration (text) for Vault"
+#}
 
 # variable "vaultservice" {
 #    description = "Configuration (text) for VaultService"
