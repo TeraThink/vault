@@ -33,8 +33,9 @@ sleep 0.001
 sudo cp terraform/aws/inputfiles/demoEnv/config.json /etc/vault/config.json
 sudo cp terraform/aws/inputfiles/demoEnv/vault.service /etc/systemd/system/
 sudo chmod 700 terraform/aws/runtimescripts/ipadd.sh
+sleep 1
 sudo terraform/aws/runtimescripts/ipadd.sh
-
+sleep 1
 
 sleep 0.001
 sudo nohup systemctl start vault.service
