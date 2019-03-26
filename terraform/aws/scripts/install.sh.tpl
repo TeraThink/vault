@@ -4,6 +4,9 @@ set -e
 # Install packages
 sudo apt-get update -y
 sudo apt-get install -y curl unzip
+#sudo yum update -y
+#sudo yum install -y curl unzip
+
 
 # Download Vault into some temporary directory
 curl -L "${download_url}" > /tmp/vault.zip
