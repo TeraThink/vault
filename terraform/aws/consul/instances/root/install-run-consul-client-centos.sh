@@ -26,11 +26,13 @@ sleep 0.001
 sudo mv consul /usr/local/bin
 sudo mkdir -p /etc/consul/ /logs/consul/
 
-sudo cp terraform/aws/consul/inputfiles/demoEnv/consul.json /etc/consul/consul.json
+sudo cp terraform/aws/consul/inputfiles/demoEnv/consul.json /etc/consul/consul.json.raw
 sudo cp terraform/aws/consul/inputfiles/demoEnv/consul.service /etc/systemd/system/
 sudo chmod 700 terraform/aws/consul/runtimescripts/ipadd.sh
 sleep 1
-sudo terraform/aws/consul/runtimescripts/ipadd.sh /etc/consul/consul.json false
+sudo terraform/aws/consul/runtimescripts/ipadd.sh /etc/consul/consul.json.raw false $cluster_tag_key $cluster_tag_value
+
+sudo rm /etc/consul/consul.json.raw
 
 sleep 0.001
 sudo nohup systemctl start consul.service
