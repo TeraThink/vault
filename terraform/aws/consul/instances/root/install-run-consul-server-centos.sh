@@ -26,11 +26,11 @@ sleep 0.001
 sudo mv consul /usr/local/bin
 sudo mkdir -p /etc/consul/ /logs/consul/
 
-sudo cp terraform/aws/consul/inputfiles/demoEnv/config.json /etc/consul/config.json
+sudo cp terraform/aws/consul/inputfiles/demoEnv/consul.json /etc/consul/consul.json
 sudo cp terraform/aws/consul/inputfiles/demoEnv/consul.service /etc/systemd/system/
 sudo chmod 700 terraform/aws/consul/runtimescripts/ipadd.sh
 sleep 0.001
-sudo terraform/aws/consul/runtimescripts/ipadd.sh /etc/consul/config.json true
+sudo terraform/aws/consul/runtimescripts/ipadd.sh /etc/consul/consul.json true
 sleep 0.001
 
 
