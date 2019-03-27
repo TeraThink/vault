@@ -24,18 +24,18 @@ sudo mkdir -p /logs/vault/
 /usr/bin/git init
 /usr/bin/git config core.sparsecheckout true
 /usr/bin/git remote add -f origin  https://github.com/TeraThink/vault.git
-echo "terraform/aws/inputfiles/*" > .git/info/sparse-checkout
-echo "terraform/aws/runtimescripts/*" >> .git/info/sparse-checkout
+echo "terraform/aws/vault/inputfiles/*" > .git/info/sparse-checkout
+echo "terraform/aws/vault/runtimescripts/*" >> .git/info/sparse-checkout
 sleep 0.001
 /usr/bin/git pull origin master
 sleep 0.001
 
 
-sudo cp terraform/aws/inputfiles/demoEnv/config.json /etc/vault/config.json
-sudo cp terraform/aws/inputfiles/demoEnv/vault.service /etc/systemd/system/
-sudo chmod 700 terraform/aws/runtimescripts/ipadd.sh
+sudo cp terraform/aws/vault/inputfiles/demoEnv/config.json /etc/vault/config.json
+sudo cp terraform/aws/vault/inputfiles/demoEnv/vault.service /etc/systemd/system/
+sudo chmod 700 terraform/aws/vault/runtimescripts/ipadd.sh
 sleep 1
-sudo terraform/aws/runtimescripts/ipadd.sh
+sudo terraform/aws/vault/runtimescripts/ipadd.sh /etc/vault/config.json
 sleep 1
 
 sleep 0.001

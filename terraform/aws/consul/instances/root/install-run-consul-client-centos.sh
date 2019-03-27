@@ -12,30 +12,35 @@ curl -L "https://releases.hashicorp.com/consul/1.4.4/consul_1.4.4_linux_amd64.zi
 
 sudo unzip *.zip -d .
 
-mv consul /usr/local/bin
+# Setup the configuration
+/usr/bin/git init
+/usr/bin/git config core.sparsecheckout true
+/usr/bin/git remote add -f origin  https://github.com/TeraThink/vault.git
+echo "terraform/aws/consul/inputfiles/*" > .git/info/sparse-checkout
+echo "terraform/aws/consul/runtimescripts/*" >> .git/info/sparse-checkout
+sleep 0.001
+/usr/bin/git pull origin master
+sleep 0.001
 
-cat <<EOF > /etc/systemd/system/consul.conf
-description "Consul"
 
-start on filesystem or runlevel [2345]
-stop on shutdown
+sudo mv consul /usr/local/bin
+sudo mkdir -p /etc/consul/ /logs/consul/
 
-script
+sudo cp terraform/aws/consul/inputfiles/demoEnv/config.json /etc/consul/config.json
+sudo cp terraform/aws/consul/inputfiles/demoEnv/consul.service /etc/systemd/system/
+sudo chmod 700 terraform/aws/consul/runtimescripts/ipadd.sh
+sleep 1
+sudo terraform/aws/consul/runtimescripts/ipadd.sh /etc/consul/config.json false
 
-    /usr/local/bin/consul agent \
-        -client \
-        -data-dir=/var/tmp/consul \
-        -client=0.0.0.0 \
-        -bind 127.0.0.1 \
-        -datacenter=AWS_REGION \
-        -bootstrap-expect=2 \
-        -ui
-
-end script
-EOF
+sleep 0.001
+sudo nohup systemctl start consul.service
+#1> /logs/vault/vaultstartup.out 2> /logs/vault/vaultstartup.err &
+#sudo nohup systemctl start vault.service  > /logs/vault/vaultstartup.log &
+sleep 50
+sudo systemctl enable consul.service
+sleep 10
 
 #systemctl reload-configuration
 
-sudo nohup systemctl start consul
 
 # ./consul agent -server -data-dir=/var/tmp/consul -client=0.0.0.0 -bind 127.0.0.1 -datacenter=AWS_REGION -bootstrap-expect=3 -ui
