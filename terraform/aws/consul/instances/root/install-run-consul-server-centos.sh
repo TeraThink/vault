@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -e
 
+echo "Passed Vars 11:: "$cluster_tag_key
+echo "Passed Vars 22:: "$cluster_tag_value
+
 # Install packages
 sudo yum install -y unzip git
 

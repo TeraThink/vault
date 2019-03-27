@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 set -e
+sudo wget http://s3.amazonaws.com/ec2metadata/ec2-metadata
+sudo chmod u+x ec2-metadata
 PRIVATE_IP=`ip route get 1 | awk '{print $NF;exit}'`
-EC2_INSTANCE_ID=`ec2metadata | grep instance-id  | cut -d: -f2 | sed 's/^[[:blank:]]*//;s/[[:blank:]]*$//'`
+EC2_INSTANCE_ID=`/var/tmp/consul/ec2-metadata | grep instance-id  | cut -d: -f2 | sed 's/^[[:blank:]]*//;s/[[:blank:]]*$//'`
 TRUEORFALSE=$2
 CLUSTER_TAG_KEY=$3
 CLUSTER_TAG_VALUE=$4
