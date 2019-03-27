@@ -32,7 +32,7 @@ sudo chmod 700 terraform/aws/consul/runtimescripts/ipadd.sh
 sleep 1
 sudo terraform/aws/consul/runtimescripts/ipadd.sh /etc/consul/consul.json.raw false $cluster_tag_key $cluster_tag_value
 
-sudo rm /etc/consul/consul.json.raw
+sudo rm -rf /etc/consul/consul.json.raw
 
 sleep 0.001
 sudo nohup systemctl start consul.service

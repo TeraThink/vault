@@ -33,7 +33,7 @@ sleep 0.001
 sudo terraform/aws/consul/runtimescripts/ipadd.sh /etc/consul/consul.json.raw false $cluster_tag_key $cluster_tag_value
 sleep 0.001
 
-sudo rm /etc/consul/consul.json.raw
+sudo rm -rf /etc/consul/consul.json.raw
 
 sudo nohup systemctl start consul.service
 #1> /logs/vault/vaultstartup.out 2> /logs/vault/vaultstartup.err &
