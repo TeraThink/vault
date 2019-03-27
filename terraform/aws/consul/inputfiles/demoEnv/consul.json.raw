@@ -1,0 +1,14 @@
+{
+  "data_dir": "/opt/consul/data",
+  "server": @@TRUEORFALSE@@,
+  "bind_addr": "@@PRIVATE_IP@@",
+  "advertise_addr": "@@PRIVATE_IP@@",
+  "bootstrap_expect": 2,
+  "ui": true,
+  "client_addr": "0.0.0.0",
+  "datacenter": "us-east-1",
+  "node_name": "@@EC2_INSTANCE_ID@@",
+  "retry_join": [
+    "provider=aws region=us-east-1 tag_key=@@CLUSTER_TAG_KEY@@ tag_value=@@CLUSTER_TAG_VALUE@@"
+  ]
+}
