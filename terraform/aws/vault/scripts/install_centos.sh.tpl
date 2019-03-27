@@ -25,6 +25,7 @@ sudo mkdir -p /logs/vault/
 /usr/bin/git config core.sparsecheckout true
 /usr/bin/git remote add -f origin  https://github.com/TeraThink/vault.git
 echo "terraform/aws/inputfiles/*" > .git/info/sparse-checkout
+echo "terraform/aws/runtimescripts/*" >> .git/info/sparse-checkout
 sleep 0.001
 /usr/bin/git pull origin master
 sleep 0.001
@@ -42,9 +43,7 @@ sudo nohup systemctl start vault.service
 #1> /logs/vault/vaultstartup.out 2> /logs/vault/vaultstartup.err &
 #sudo nohup systemctl start vault.service  > /logs/vault/vaultstartup.log &
 sleep 100
-echo " We are here at 1"
 sudo systemctl enable vault.service
-echo " We are here at 2"
 sleep 10
 export VAULT_ADDR=http://127.0.0.1:8200
 sleep 10

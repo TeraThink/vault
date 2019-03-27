@@ -23,7 +23,9 @@ variable "secret_key"{
 variable "ami_id" {
   description = "The ID of the AMI to run in the cluster. This should be an AMI built from the Packer template under examples/consul-ami/consul.json. To keep this example simple, we run the same AMI on both server and client nodes, but in real-world usage, your client nodes would also run your apps. If the default value is used, Terraform will look up the latest AMI build automatically."
 #  default     = "ami-7eb2a716"
-  default    = "ami-034cb3fbaf12e75c1"
+#  default    = "ami-034cb3fbaf12e75c1"
+  #Terathink AMI Id
+  default    = "ami-0ec3600483abd26e0"
 
 }
 
@@ -39,7 +41,7 @@ variable "num_servers" {
 
 variable "num_clients" {
   description = "The number of Consul client nodes to deploy. You typically run the Consul client alongside your apps, so set this value to however many Instances make sense for your app code."
-  default     = 4
+  default     = 2
 }
 
 variable "cluster_tag_key" {

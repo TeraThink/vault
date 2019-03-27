@@ -1,13 +1,4 @@
-# ---------------------------------------------------------------------------------------------------------------------
-# DEPLOY A CONSUL CLUSTER IN AWS
-# These templates show an example of how to use the consul-cluster module to deploy Consul in AWS. We deploy two Auto
-# Scaling Groups (ASGs): one with a small number of Consul server nodes and one with a larger number of Consul client
-# nodes. Note that these templates assume that the AMI you provide via the ami_id input variable is built from
-# the examples/consul-ami/consul.json Packer template.
-# ---------------------------------------------------------------------------------------------------------------------
 
-# Terraform 0.9.5 suffered from https://github.com/hashicorp/terraform/issues/14399, which causes this template the
-# conditionals in this template to fail.
 terraform {
   required_version = ">= 0.9.3, != 0.9.5"
 }
@@ -17,20 +8,7 @@ provider "aws" {
   secret_key = "${var.secret_key}"
   region = "us-east-1"
 }
-# ---------------------------------------------------------------------------------------------------------------------
-# AUTOMATICALLY LOOK UP THE LATEST PRE-BUILT AMI
-# This repo contains a CircleCI job that automatically builds and publishes the latest AMI by building the Packer
-# template at /examples/consul-ami upon every new release. The Terraform data source below automatically looks up the
-# latest AMI so that a simple "terraform apply" will just work without the user needing to manually build an AMI and
-# fill in the right value.
-#
-# !! WARNING !! These exmaple AMIs are meant only convenience when initially testing this repo. Do NOT use these example
-# AMIs in a production setting because it is important that you consciously think through the configuration you want
-# in your own production AMI.
-#
-# NOTE: This Terraform data source must return at least one AMI result or the entire template will fail. See
-# /_ci/publish-amis-in-new-account.md for more information.
-# ---------------------------------------------------------------------------------------------------------------------
+/*
 data "aws_ami" "consul" {
   most_recent = true
 
@@ -52,7 +30,7 @@ data "aws_ami" "consul" {
     values = ["consul-ubuntu-*"]
   }
 }
-
+*/
 # ---------------------------------------------------------------------------------------------------------------------
 # DEPLOY THE CONSUL SERVER NODES
 # ---------------------------------------------------------------------------------------------------------------------
@@ -73,7 +51,7 @@ module "consul_servers" {
   cluster_tag_value = "${var.cluster_name}"
 
 #  ami_id    = "ami-7eb2a716"
-  ami_id    = "ami-034cb3fbaf12e75c1"
+  ami_id    = "${var.ami_id}"
   user_data = "${data.template_file.user_data_server.rendered}"
   #installs = "${data.template_file.install_consul_across_all.rendered}"
 
@@ -97,24 +75,10 @@ module "consul_servers" {
   ]
 
 }
-#data "template_file" "user_data_server1" {
-#  template = "${file("${path.module}/modules/install-consul/install-consul")}"
 
-#  vars {
-#    cluster_tag_key   = "${var.cluster_tag_key}"
-#    cluster_tag_value = "${var.cluster_name}"
-#  }
-#}
-
-
-
-# ---------------------------------------------------------------------------------------------------------------------
-# THE USER DATA SCRIPT THAT WILL RUN ON EACH CONSUL SERVER EC2 INSTANCE WHEN IT'S BOOTING
-# This script will configure and start Consul
-# ---------------------------------------------------------------------------------------------------------------------
 
 data "template_file" "user_data_server" {
-  template = "${file("${path.module}/examples/root-example/user-data-server.sh")}"
+  template = "${file("${path.module}/instances/root/install-run-consul-server-centos.sh")}"
 
   vars {
     cluster_tag_key   = "${var.cluster_tag_key}"
@@ -145,7 +109,8 @@ module "consul_clients" {
   cluster_tag_value = "${var.cluster_name}"
 
   #ami_id    = "ami-7eb2a716"
-  ami_id    = "ami-034cb3fbaf12e75c1"
+  #ami_id    = "ami-034cb3fbaf12e75c1"
+  ami_id    = "${var.ami_id}"
   user_data = "${data.template_file.user_data_client.rendered}"
 
 
@@ -167,7 +132,7 @@ module "consul_clients" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 data "template_file" "user_data_client" {
-  template = "${file("${path.module}/examples/root-example/user-data-client.sh")}"
+  template = "${file("${path.module}/instances/root/install-run-consul-client-centos.sh")}"
 
   vars {
     cluster_tag_key   = "${var.cluster_tag_key}"

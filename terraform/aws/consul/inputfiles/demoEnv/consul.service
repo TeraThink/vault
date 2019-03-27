@@ -1,0 +1,19 @@
+[Unit]
+Description=vault service
+Requires=network-online.target
+After=network-online.target
+ConditionFileNotEmpty=/etc/consul/consul.json
+
+[Service]
+EnvironmentFile=-/etc/sysconfig/vault
+Environment=GOMAXPROCS=2
+Restart=on-failure
+ExecStart=/usr/bin/consul agent -config-file /etc/consul/consul.json
+StandardOutput=/logs/consul/output.log
+StandardError=/logs/consul/error.log
+LimitMEMLOCK=infinity
+ExecReload=/bin/kill -HUP $MAINPID
+KillSignal=SIGTERM
+
+[Install]
+WantedBy=multi-user.target
