@@ -86,6 +86,7 @@ data "template_file" "user_data_server" {
     server_ui_required = "true"
     server_or_agent    = "true"
     boot_strap_value   = "${var.num_servers}"
+    consul_binary_download_url  = "${var.consul_binary_download_url}"
   }
 }
 
