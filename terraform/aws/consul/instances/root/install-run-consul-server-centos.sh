@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 set -e
 
-echo "Passed Vars 11:: "$cluster_tag_key
-echo "Passed Vars 22:: "$cluster_tag_value
+echo "Passed Vars test 11:: "$cluster_tag_key
+echo "Passed Vars test 22:: "$cluster_tag_value
 
-echo "Passed Vars 33:: "$1
-echo "Passed Vars 44:: "$2
+echo "Passed Vars test 33:: "$1
+echo "Passed Vars test 44:: "$2
 
 cluster_tag_key=$1
 cluster_tag_value=$2
