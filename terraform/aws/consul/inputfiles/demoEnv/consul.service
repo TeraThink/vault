@@ -8,7 +8,7 @@ ConditionFileNotEmpty=/etc/consul/consul.json
 EnvironmentFile=-/etc/sysconfig/vault
 Environment=GOMAXPROCS=2
 Restart=on-failure
-ExecStart=/usr/local/bin/consul agent -config-file /etc/consul/consul.json
+ExecStart=/usr/local/bin/consul agent -dev -config-file /etc/consul/consul.json
 StandardOutput=/logs/consul/output.log
 StandardError=/logs/consul/error.log
 LimitMEMLOCK=infinity
