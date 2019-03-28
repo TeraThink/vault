@@ -78,7 +78,7 @@ module "consul_servers" {
 
 
 data "template_file" "user_data_server" {
-  template = "${file("${path.module}/instances/root/install-run-consul-server-centos.sh")}"
+  template = "${file("${path.module}/instances/root/install-run-consul-server-centos.sh.tpl")}"
 
   vars {
     cluster_tag_key   = "${var.cluster_tag_key}"
@@ -132,7 +132,7 @@ module "consul_clients" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 data "template_file" "user_data_client" {
-  template = "${file("${path.module}/instances/root/install-run-consul-client-centos.sh")}"
+  template = "${file("${path.module}/instances/root/install-run-consul-client-centos.sh.tpl")}"
 
   vars {
     cluster_tag_key   = "${var.cluster_tag_key}"
