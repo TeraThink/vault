@@ -7,8 +7,8 @@ echo "Passed Vars test 22:: "$cluster_tag_value
 echo "Passed Vars test 33:: "$1
 echo "Passed Vars test 44:: "$2
 
-cluster_tag_key=$1
-cluster_tag_value=$2
+cluster_tag_key="consul-servers"
+cluster_tag_value="consul"
 
 
 # Install packages
