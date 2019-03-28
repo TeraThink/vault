@@ -4,6 +4,9 @@ set -e
 # Install packages
 sudo yum install -y unzip git
 
+echo "DownLoad URL :: "${download_url}
+echo "DownLoad URL :: "$download_url
+
 
 mkdir /var/tmp/vault
 cd /var/tmp/vault
