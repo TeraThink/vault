@@ -105,7 +105,7 @@ module "consul_clients" {
   instance_type = "t2.micro"
   spot_price    = "${var.spot_price}"
 
-  cluster_tag_key   = "consul-clients"
+  cluster_tag_key   = "${var.cluster_tag_key}"
   cluster_tag_value = "${var.cluster_name}"
 
   #ami_id    = "ami-7eb2a716"
