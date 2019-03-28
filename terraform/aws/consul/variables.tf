@@ -34,10 +34,27 @@ variable "cluster_name" {
   default     = "consul"
 }
 
+variable "server_ui_required" {
+  description = "What is flag for server ui, true or false "
+  default     = "false"
+}
+
+variable "server_or_agent" {
+  description = "What is the node, is it server or agent, true or false "
+  default     = "false"
+}
+
+
 variable "num_servers" {
   description = "The number of Consul server nodes to deploy. We strongly recommend using 3 or 5."
   default     = 2
 }
+
+variable "consul_binary_download_url" {
+  description = "The consul binary download URL"
+  default     = "https://releases.hashicorp.com/consul/1.4.4/consul_1.4.4_linux_amd64.zip"
+}
+
 
 variable "num_clients" {
   description = "The number of Consul client nodes to deploy. You typically run the Consul client alongside your apps, so set this value to however many Instances make sense for your app code."

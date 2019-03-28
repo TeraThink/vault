@@ -81,8 +81,11 @@ data "template_file" "user_data_server" {
   template = "${file("${path.module}/instances/root/install-run-consul-server-centos.sh")}"
 
   vars {
-    cluster_tag_key   = "${var.cluster_tag_key}"
-    cluster_tag_value = "${var.cluster_name}"
+    cluster_tag_key    = "${var.cluster_tag_key}"
+    cluster_tag_value  = "${var.cluster_name}"
+    server_ui_required = "true"
+    server_or_agent    = "true"
+    boot_strap_value   = "${var.num_servers}"
   }
 }
 
@@ -135,8 +138,12 @@ data "template_file" "user_data_client" {
   template = "${file("${path.module}/instances/root/install-run-consul-client-centos.sh")}"
 
   vars {
-    cluster_tag_key   = "${var.cluster_tag_key}"
-    cluster_tag_value = "${var.cluster_name}"
+    cluster_tag_key             = "${var.cluster_tag_key}"
+    cluster_tag_value           = "${var.cluster_name}"
+    server_ui_required          = "${var.server_ui_required}"
+    server_or_agent             = "${var.server_or_agent}"
+    boot_strap_value            = "0"
+    consul_binary_download_url  = "${var.consul_binary_download_url}"
   }
 }
 

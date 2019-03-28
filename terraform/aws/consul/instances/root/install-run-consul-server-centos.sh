@@ -1,16 +1,6 @@
 #!/usr/bin/env bash
 set -e
 
-echo "Passed Vars test 11:: "${cluster_tag_key}
-echo "Passed Vars test 22:: "${cluster_tag_value}
-
-echo "Passed Vars test 33:: "$1
-echo "Passed Vars test 44:: "$2
-
-cluster_tag_key="consul-servers"
-cluster_tag_value="consul"
-
-
 # Install packages
 sudo yum install -y unzip git
 
@@ -18,7 +8,7 @@ sudo yum install -y unzip git
 mkdir /var/tmp/consul
 cd /var/tmp/consul
 # Download Vault into directory
-curl -L "https://releases.hashicorp.com/consul/1.4.4/consul_1.4.4_linux_amd64.zip" > /var/tmp/consul/consul.zip
+curl -L "${consul_binary_download_url}"  > /var/tmp/consul/consul.zip
 
 sudo unzip *.zip -d .
 
@@ -38,9 +28,9 @@ sudo mkdir -p /etc/consul/config /logs/consul/ /etc/consul/data
 
 sudo cp terraform/aws/consul/inputfiles/demoEnv/consul.json.raw /etc/consul/config/consul.json.raw
 sudo cp terraform/aws/consul/inputfiles/demoEnv/consul.service /etc/systemd/system/
-sudo chmod 700 terraform/aws/consul/runtimescripts/ipadd.sh
+sudo chmod 700 terraform/aws/consul/runtimescripts/constructConfig.sh
 sleep 0.001
-sudo terraform/aws/consul/runtimescripts/ipadd.sh /etc/consul/config/consul.json.raw true $cluster_tag_key $cluster_tag_value true 2
+sudo terraform/aws/consul/runtimescripts/constructConfig.sh /etc/consul/config/consul.json.raw ${server_ui_required} ${cluster_tag_key} ${cluster_tag_value} ${server_or_agent} ${boot_strap_value}
 sleep 0.001
 
 sudo rm -rf /etc/consul/config/consul.json.raw
