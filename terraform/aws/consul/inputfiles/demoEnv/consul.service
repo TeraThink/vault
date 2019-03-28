@@ -2,12 +2,12 @@
 Description=vault service
 Requires=network-online.target
 After=network-online.target
-ConditionFileNotEmpty=/etc/consul/consul.json
+ConditionFileNotEmpty=/etc/consul/config/consul.json
 
 [Service]
 Environment=GOMAXPROCS=2
 Restart=on-failure
-ExecStart=/usr/local/bin/consul agent -config-dir /etc/consul/ -data-dir /etc/consul/data
+ExecStart=/usr/local/bin/consul agent -config-dir /etc/consul/config -data-dir /etc/consul/data
 StandardOutput=/logs/consul/output.log
 StandardError=/logs/consul/error.log
 LimitMEMLOCK=infinity

@@ -1,7 +1,7 @@
 {
 	"advertise_addr": "@@PRIVATE_IP@@",
 	"bind_addr": "@@PRIVATE_IP@@",
-	"bootstrap_expect": 2,
+	"bootstrap_expect": @@BOOTSTRAP_VALUE@@,
 	"client_addr": "0.0.0.0",
 	"datacenter": "us-east-1",
 	"node_name": "@@EC2_INSTANCE_ID@@",
