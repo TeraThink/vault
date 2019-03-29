@@ -11,15 +11,7 @@
 # OPTIONAL PARAMETERS
 # These parameters have reasonable defaults.
 # ---------------------------------------------------------------------------------------------------------------------
-variable "access_key"{
-  default = "AKIAI3OHWYK6P6DRMBDA"
-  description = "AWS Access Key"
-}
 
-variable "secret_key"{
-  default = "1pkntD/1FQ0UupoQmoycB4qo8LQS+bNCWsffHjNC"
-  description = "AWS secret Key"
-}
 variable "ami_id" {
   description = "The ID of the AMI to run in the cluster. This should be an AMI built from the Packer template under examples/consul-ami/consul.json. To keep this example simple, we run the same AMI on both server and client nodes, but in real-world usage, your client nodes would also run your apps. If the default value is used, Terraform will look up the latest AMI build automatically."
 #  default     = "ami-7eb2a716"
