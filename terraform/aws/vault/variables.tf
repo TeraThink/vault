@@ -2,15 +2,6 @@
 // Vault settings
 //-------------------------------------------------------------------
 
-variable "access_key"{
-  default = "AKIAI3OHWYK6P6DRMBDA"
-  description = "AWS Access Key"
-}
-
-variable "secret_key"{
-  default = "1pkntD/1FQ0UupoQmoycB4qo8LQS+bNCWsffHjNC"
-  description = "AWS secret Key"
-}
 
 variable "download-url" {
     default = "https://releases.hashicorp.com/vault"
