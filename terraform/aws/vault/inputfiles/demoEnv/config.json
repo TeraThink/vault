@@ -10,7 +10,7 @@
   "api_addr": "http://@@PRIVATE_IP@@:8200",
   "storage": {
     "consul": {
-      "address" : "52.55.3.17:8500",
+      "address" : "52.207.157.134:8500",
       "path": "vault"
     }
   },
