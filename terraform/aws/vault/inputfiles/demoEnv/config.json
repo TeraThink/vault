@@ -9,9 +9,8 @@
   ],
   "api_addr": "http://@@PRIVATE_IP@@:8200",
   "storage": {
-    "consul": {
-      "address" : "52.207.157.134:8500",
-      "path": "vault"
+    "file": {
+      "path": "/vault-datva"
     }
   },
   "max_lease_ttl": "10h",
