@@ -1,0 +1,20 @@
+{
+  "listener": [
+    {
+      "tcp": {
+        "address": "0.0.0.0:8200",
+        "tls_disable": 1
+      }
+    }
+  ],
+  "api_addr": "http://@@PRIVATE_IP@@:8200",
+  "storage": {
+    "consul": {
+      "address" : "52.207.157.134:8500",
+      "path": "vault"
+    }
+  },
+  "max_lease_ttl": "10h",
+  "default_lease_ttl": "10h",
+  "ui": true
+}
