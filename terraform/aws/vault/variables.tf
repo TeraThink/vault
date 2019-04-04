@@ -58,8 +58,8 @@ variable "elb-health-check" {
 
 variable "instance_type" {
   // ubuntu default size
-    # default = "m3.medium"
-    default = "t2.micro"
+    default = "m3.medium"
+    #default = "t2.micro"
     // Centos default size
     //default = "m4.large"
     description = "Instance type for Vault instances"
