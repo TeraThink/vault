@@ -10,7 +10,7 @@
   "api_addr": "http://@@PRIVATE_IP@@:8200",
   "storage": {
     "file": {
-      "path": "/vault-datva"
+      "path": "/vault-data"
     }
   },
   "max_lease_ttl": "10h",
